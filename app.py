@@ -17,6 +17,13 @@ from pathlib import Path
 # (browser/Deck mode) can import the Api class without pywebview installed.
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+# QtWebEngine crashes on SteamOS unless its sandbox is off (we don't ship the
+# setuid helper) and the GPU is disabled. Set before any Qt import so it applies
+# whether launched from source, run-deck.sh, or the AppImage. Verified on a Deck.
+os.environ.setdefault("QTWEBENGINE_DISABLE_SANDBOX", "1")
+os.environ.setdefault("QTWEBENGINE_CHROMIUM_FLAGS", "--no-sandbox --disable-gpu")
+
 from cp77edit.editor import SaveEditor, SaveError, ATTRIBUTES, ATTR_LABELS  # noqa
 from cp77edit.builds import PRESETS, UNIVERSAL, UNIVERSAL_QUICKHACKS  # noqa
 
