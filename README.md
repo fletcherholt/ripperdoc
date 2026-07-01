@@ -15,6 +15,49 @@ backs it up before it writes a single thing. Pick a save, pick a build, done.
 
 ---
 
+## Install
+
+Needs Python 3 (already on the Steam Deck). Nothing else to install by hand,
+the first run sets itself up.
+
+### Steam Deck (do this)
+
+1. Hold the power button, choose **Switch to Desktop**, then open **Konsole**.
+2. Paste this in and hit enter:
+
+   ```bash
+   git clone https://github.com/fletcherholt/night-city-save-editor.git
+   cd night-city-save-editor
+   ./run-deck.sh
+   ```
+
+   First run builds a small local venv, then the editor opens in your browser and
+   finds your saves on its own.
+
+3. Optional, to get it in your app list with its icon (and add it to Steam as a
+   non-Steam game so you can launch it from Game Mode):
+
+   ```bash
+   ./install-deck.sh
+   ```
+
+Next time, just run `./run-deck.sh` again.
+
+### macOS / Linux desktop
+
+```bash
+git clone https://github.com/fletcherholt/night-city-save-editor.git
+cd night-city-save-editor
+./run.sh
+```
+
+Opens in its own native window.
+
+**Before you trust it:** edit a throwaway save and load it in-game once to
+confirm. Edit with the game closed so Steam Cloud does not overwrite your changes.
+
+---
+
 <div align="center">
 <img src="assets/screenshot-menu.png" width="800" alt="Main menu">
 </div>
@@ -59,32 +102,6 @@ best-in-slot cyberware for that build on the cyberware screen:
 The cyberware list is a ripperdoc shopping list, not a magic button. It does not
 inject items into the save, because the inventory format is where saves get
 bricked. Buy and slot the chrome yourself in game.
-
-## Running it
-
-### Steam Deck (recommended)
-
-Browser mode, no native GUI dependencies, the reliable path on SteamOS.
-
-```bash
-./run-deck.sh
-```
-
-Builds a small local venv on first run, starts a local server and opens the
-editor in your browser. To get it into the app menu with its icon (then add it
-to Steam as a non-Steam game), run once from Desktop Mode:
-
-```bash
-./install-deck.sh
-```
-
-### macOS / Linux desktop (native window)
-
-```bash
-./run.sh
-```
-
-Opens in its own window via pywebview.
 
 ## Where your saves are
 
