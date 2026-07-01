@@ -235,12 +235,33 @@ def main():
 
 def _fallback(reason):
     """No native window backend — run the browser mode instead so the app still
-    works, rather than crashing."""
-    print(f"[ripperdoc] native window unavailable ({reason}); "
-          f"falling back to browser mode.")
+    opens something, rather than silently doing nothing."""
+    _log(f"native window unavailable ({reason}); falling back to browser mode.")
+    print(f"[ripperdoc] native window unavailable ({reason}); browser mode.")
     import server
     server.main()
 
 
+def _log(msg):
+    """Append to a log in the home folder so a Deck user with no keyboard can
+    just double-click the file to read what went wrong."""
+    try:
+        with open(os.path.join(os.path.expanduser("~"), "ripperdoc-log.txt"), "a") as f:
+            f.write(str(msg) + "\n")
+    except Exception:
+        pass
+
+
 if __name__ == "__main__":
-    main()
+    _log("--- ripperdoc starting ---")
+    try:
+        main()
+    except Exception:
+        import traceback
+        _log(traceback.format_exc())
+        traceback.print_exc()
+        # last resort: still try to open the browser UI
+        try:
+            _fallback("startup crashed")
+        except Exception:
+            _log("browser fallback also failed")

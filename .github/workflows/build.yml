@@ -68,7 +68,21 @@ jobs:
           set -e
           wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
-          ARCH=x86_64 ./appimagetool-x86_64.AppImage --appimage-extract-and-run AppDir Ripperdoc-x86_64.AppImage
+          # Use uruntime: a self-mounting AppImage runtime that works on the
+          # Steam Deck without host FUSE (auto extract-and-run), so the app
+          # launches on a plain double-click instead of silently doing nothing.
+          URL=$(curl -sL https://api.github.com/repos/VHSgunzo/uruntime/releases/latest \
+            | jq -r '.assets[] | select(.name | test("uruntime-appimage-squashfs-x86_64$")) | .browser_download_url' | head -1)
+          if [ -n "$URL" ]; then
+            echo "using uruntime: $URL"
+            wget -q "$URL" -O uruntime && chmod +x uruntime
+            ARCH=x86_64 ./appimagetool-x86_64.AppImage --appimage-extract-and-run \
+              --runtime-file uruntime AppDir Ripperdoc-x86_64.AppImage
+          else
+            echo "uruntime not found, falling back to default runtime"
+            ARCH=x86_64 ./appimagetool-x86_64.AppImage --appimage-extract-and-run AppDir Ripperdoc-x86_64.AppImage
+          fi
+          chmod +x Ripperdoc-x86_64.AppImage
           ls -lh Ripperdoc-x86_64.AppImage
 
       - uses: actions/upload-artifact@v4
