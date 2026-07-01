@@ -43,7 +43,8 @@ the first run sets itself up.
    ./install-deck.sh
    ```
 
-Next time, just run `./run-deck.sh` again.
+Next time, just run `./run-deck.sh` again. It **auto-updates** on launch, if a
+new version is on GitHub it pulls it before starting (skip with `--no-update`).
 
 ### macOS / Linux desktop
 
