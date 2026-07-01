@@ -13,7 +13,8 @@ import sys
 import traceback
 from pathlib import Path
 
-import webview
+# webview is imported lazily inside main()/browse_folder so that server.py
+# (browser/Deck mode) can import the Api class without pywebview installed.
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from cp77edit.editor import SaveEditor, SaveError, ATTRIBUTES, ATTR_LABELS  # noqa
@@ -108,6 +109,7 @@ class Api:
         return out
 
     def browse_folder(self):
+        import webview
         win = webview.windows[0]
         res = win.create_file_dialog(webview.FOLDER_DIALOG)
         if not res:
@@ -183,6 +185,7 @@ class Api:
 
 
 def main():
+    import webview
     api = Api()
     here = os.path.dirname(os.path.abspath(__file__))
     index = os.path.join(here, "web", "index.html")
