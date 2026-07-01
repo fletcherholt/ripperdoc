@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NIGHT CITY SAVE EDITOR - native Cyberpunk 2077 save editor for the Steam Deck.
+"""RIPPERDOC, a native Cyberpunk 2077 save editor for the Steam Deck.
 
 dacctal-themed pywebview front end over the proven cp77edit engine. Safe scalar
 edits only (level, street cred, attributes, perk points) plus one-click build
@@ -187,7 +187,7 @@ def main():
     here = os.path.dirname(os.path.abspath(__file__))
     index = os.path.join(here, "web", "index.html")
     webview.create_window(
-        "NIGHT CITY // SAVE EDITOR",
+        "RIPPERDOC // Cyberpunk 2077 Save Editor",
         index,
         js_api=api,
         width=1180,

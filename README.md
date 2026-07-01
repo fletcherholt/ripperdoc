@@ -2,7 +2,7 @@
 
 <img src="assets/cp2077.gif" width="480" alt="Cyberpunk 2077">
 
-# Night City Save Editor
+# Ripperdoc
 
 **A Cyberpunk 2077 save editor built for the Steam Deck.**
 
@@ -26,8 +26,8 @@ the first run sets itself up.
 2. Paste this in and hit enter:
 
    ```bash
-   git clone https://github.com/fletcherholt/night-city-save-editor.git
-   cd night-city-save-editor
+   git clone https://github.com/fletcherholt/ripperdoc.git
+   cd ripperdoc
    ./run-deck.sh
    ```
 
@@ -46,8 +46,8 @@ Next time, just run `./run-deck.sh` again.
 ### macOS / Linux desktop
 
 ```bash
-git clone https://github.com/fletcherholt/night-city-save-editor.git
-cd night-city-save-editor
+git clone https://github.com/fletcherholt/ripperdoc.git
+cd ripperdoc
 ./run.sh
 ```
 

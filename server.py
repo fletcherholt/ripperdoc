@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Browser-mode launcher for the Night City Save Editor.
+"""Browser-mode launcher for Ripperdoc.
 
 Stdlib only (no webview backend), so it runs anywhere with a browser — ideal
 for the Steam Deck where pywebview's GTK/Qt backend is a pain on the immutable
@@ -69,7 +69,7 @@ def main():
         port = int(sys.argv[sys.argv.index("--port") + 1])
     httpd = ThreadingHTTPServer(("127.0.0.1", port), Handler)
     url = f"http://127.0.0.1:{port}/index.html"
-    print(f"NIGHT CITY SAVE EDITOR — jack in at {url}")
+    print(f"RIPPERDOC :: Cyberpunk 2077 save editor :: jack in at {url}")
     if open_browser:
         threading.Timer(0.6, lambda: webbrowser.open(url)).start()
     try:

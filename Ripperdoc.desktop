@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=Night City Save Editor
+Name=Ripperdoc
 Comment=Cyberpunk 2077 save editor for the Steam Deck
 Exec=bash -c "cd %k/.. 2>/dev/null; ./run-deck.sh"
-Icon=night-city-save-editor
+Icon=ripperdoc
 Terminal=false
 Categories=Game;Utility;

@@ -1,4 +1,4 @@
-// NIGHT CITY SAVE EDITOR, front end. Talks to the Python Api in either mode:
+// RIPPERDOC, front end. Talks to the Python Api in either mode:
 //   native window  -> window.pywebview.api.<method>()
 //   browser/server -> POST /api/<method>  (server.py, ideal on the Steam Deck)
 const RPC = (method, ...args) => {

@@ -1,4 +1,4 @@
-/* NIGHT CITY SAVE EDITOR — authentic Cyberpunk 2077 in-game UI, dacctal-rooted */
+/* RIPPERDOC, Cyberpunk 2077 save editor — authentic Cyberpunk 2077 in-game UI, dacctal-rooted */
 :root{
   /* dacctal base */
   --bg:#0a0a0c;
@@ -54,8 +54,8 @@ button,input{font-family:inherit;color:inherit}
 #picker{display:flex;align-items:center;justify-content:center;padding:40px}
 .menu-wrap{width:100%;max-width:760px}
 .menu-title{margin-bottom:34px;line-height:.9}
-.mt-top{font-family:var(--cond);font-weight:700;font-size:34px;letter-spacing:.42em;color:var(--text);margin-left:6px}
-.mt-big{font-family:var(--cond);font-weight:700;font-size:120px;letter-spacing:.04em;color:var(--yellow);
+.mt-top{font-family:var(--cond);font-weight:700;font-size:34px;letter-spacing:.26em;color:var(--text);margin-left:6px}
+.mt-big{font-family:var(--cond);font-weight:700;font-size:92px;letter-spacing:.04em;color:var(--yellow);
   text-shadow:0 0 30px rgba(252,238,10,.35),4px 4px 0 var(--red);margin:-6px 0}
 .mt-sub{font-size:12px;letter-spacing:.34em;color:var(--cyan);margin-top:10px}
 .menu-list{display:flex;flex-direction:column;gap:3px;margin-bottom:18px;max-height:42vh;overflow:auto}
