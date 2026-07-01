@@ -17,34 +17,34 @@ backs it up before it writes a single thing. Pick a save, pick a build, done.
 
 ## Install
 
-Needs Python 3 (already on the Steam Deck). Nothing else to install by hand,
-the first run sets itself up.
+### Steam Deck — download the app (easiest)
 
-### Steam Deck (do this)
+A single self-contained Linux app. No Python, no terminal, nothing to install.
 
-1. Hold the power button, choose **Switch to Desktop**, then open **Konsole**.
-2. Paste this in and hit enter:
+1. Grab **Ripperdoc-x86_64.AppImage** from the
+   [latest release](https://github.com/fletcherholt/ripperdoc/releases/latest).
+2. In Desktop Mode, right-click it in Dolphin, **Properties → Permissions →
+   tick "Is executable"** (or `chmod +x Ripperdoc-x86_64.AppImage`).
+3. Double-click to run it. To launch it from Game Mode, add it to Steam:
+   **Steam → Add a Non-Steam Game → Browse** to the AppImage.
 
-   ```bash
-   git clone https://github.com/fletcherholt/ripperdoc.git
-   cd ripperdoc
-   ./run-deck.sh
-   ```
+If it refuses to start, run it once from Konsole with
+`./Ripperdoc-x86_64.AppImage --appimage-extract-and-run`.
 
-   First run builds a small local venv (it pulls Qt, so give it a minute), then
-   Ripperdoc opens as its own app window and finds your saves on its own. If the
-   native window won't start on your setup it falls back to a browser window; you
-   can also force that with `./run-deck.sh --web`.
+### From source (auto-updating)
 
-3. Optional, to get it in your app list with its icon (and add it to Steam as a
-   non-Steam game so you can launch it from Game Mode):
+If you'd rather run from the repo (this version **auto-updates** itself on
+launch):
 
-   ```bash
-   ./install-deck.sh
-   ```
+```bash
+git clone https://github.com/fletcherholt/ripperdoc.git
+cd ripperdoc
+./run-deck.sh
+```
 
-Next time, just run `./run-deck.sh` again. It **auto-updates** on launch, if a
-new version is on GitHub it pulls it before starting (skip with `--no-update`).
+First run builds a small local venv and pulls Qt, then Ripperdoc opens as its
+own app window. `./install-deck.sh` adds it to your app menu. Skip the update
+check with `--no-update`, or force browser mode with `--web`.
 
 ### macOS / Linux desktop
 
