@@ -11,10 +11,12 @@ ROOT = os.path.abspath(os.path.join(SPECPATH, os.pardir))
 
 datas = [(os.path.join(ROOT, "web"), "web"), (os.path.join(ROOT, "assets"), "assets")]
 binaries = []
-hiddenimports = ["lz4", "lz4.block", "server", "http.server", "webbrowser"]
+hiddenimports = ["lz4", "lz4.block", "server", "http.server", "webbrowser",
+                 "qtpy", "webview.platforms.qt"]
 
 # Pull in everything the Qt WebEngine backend needs (process, resources, libs).
-for pkg in ("webview", "PyQt5", "PyQtWebEngine"):
+# qtpy is the abstraction layer pywebview's qt backend imports at runtime.
+for pkg in ("webview", "qtpy", "PyQt5", "PyQtWebEngine"):
     try:
         d, b, h = collect_all(pkg)
         datas += d

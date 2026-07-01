@@ -316,8 +316,10 @@ async function init() {
 window.addEventListener("pywebviewready", init);
 
 document.addEventListener("DOMContentLoaded", () => {
-  // browser/server mode has no pywebviewready event
-  if (!window.pywebview) setTimeout(init, 60);
+  // Native mode injects the pywebview.api bridge shortly after load and fires
+  // 'pywebviewready' (handled above). Only fall back to browser mode (fetch) if
+  // that bridge never shows up, else we'd race it and hit the wrong transport.
+  setTimeout(() => { if (!BUILDS && !window.pywebview) init(); }, 1500);
   $("#rescanBtn").onclick = () => rescan();
   $("#browseBtn").onclick = async () => { const f = await api().browse_folder(); if (f) rescan(f); };
   $("#manualLoad").onclick = () => { const p = $("#manualPath").value.trim(); if (p) loadSave(p); };

@@ -10,7 +10,7 @@ set -e
 cd "$(dirname "$0")"
 source ./update.sh "$@"
 PY=python3
-DEPS="lz4 pywebview PySide6"
+DEPS="lz4 pywebview PyQt5 PyQtWebEngine qtpy"
 if [ ! -d .venv ]; then
   echo "first run: building venv (pulling Qt, this takes a minute)…"
   $PY -m venv .venv
