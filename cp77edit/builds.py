@@ -34,6 +34,16 @@ PRESETS = {
             "Legs": "Reinforced Tendons (double jump)",
             "Arms": "Monowire (quickhack-scaling melee fallback)",
         },
+        "quickhacks": [
+            {"name": "Ping", "note": "Light up the whole network through walls. Slot it first, always."},
+            {"name": "Contagion", "note": "Poison that jumps between gonks. Melts a whole room."},
+            {"name": "Overheat", "note": "Cheap burn that spreads. Your bread-and-butter opener."},
+            {"name": "Short Circuit", "note": "Cheap electrical, crits, scales hard. Spam it."},
+            {"name": "Synapse Burnout", "note": "Single-target nuke, scales with Intelligence. Deletes elites."},
+            {"name": "Sonic Shock", "note": "Cuts their comms so nobody calls backup."},
+            {"name": "Reboot Optics", "note": "Blinds them. Free reposition or finisher setup."},
+            {"name": "Suicide", "note": "Ultimate. Make the scariest gonk in the room off himself."},
+        ],
     },
     "sandevistan": {
         "title": "Sandevistan Solo",
@@ -59,6 +69,13 @@ PRESETS = {
             "Legs": "Reinforced Tendons (double jump)",
             "Arms": "Mantis Blades (scales with Sandevistan)",
         },
+        "quickhacks": [
+            {"name": "Ping", "note": "Wallhack the room before you hit the Sande. Worth it on any build."},
+            {"name": "Sonic Shock", "note": "Silence a group so they can't call backup while you carve."},
+            {"name": "Reboot Optics", "note": "Blind a heavy, then close the distance and delete him."},
+            {"name": "Cripple Movement", "note": "Pin a runner in place for a clean pass."},
+            {"name": "Weapon Glitch", "note": "Jam their guns so the room's half-defanged when time restarts."},
+        ],
     },
     "tech": {
         "title": "Tech Engineer",
@@ -84,6 +101,13 @@ PRESETS = {
             "Legs": "Reinforced Tendons",
             "Arms": "Projectile Launch System or Gorilla Arms",
         },
+        "quickhacks": [
+            {"name": "Ping", "note": "Map the whole network. Pairs with tech guns that shoot through walls."},
+            {"name": "Weapon Glitch", "note": "Their guns misfire while you charge a shot through the wall."},
+            {"name": "Overheat", "note": "Cheap burn to soften a group before you open up."},
+            {"name": "Sonic Shock", "note": "Kill their comms so no reinforcements show."},
+            {"name": "Cyberware Malfunction", "note": "Shut down an enemy's chrome, then punch through."},
+        ],
     },
     "tank": {
         "title": "Solo Tank",
@@ -109,6 +133,12 @@ PRESETS = {
             "Legs": "Fortified Ankles (charged jump) or Reinforced Tendons",
             "Arms": "Gorilla Arms (blunt + Body checks)",
         },
+        "quickhacks": [
+            {"name": "Ping", "note": "Know where everyone is before you wade in swinging."},
+            {"name": "Reboot Optics", "note": "Blind the gonk with the biggest gun while you close in."},
+            {"name": "Cripple Movement", "note": "Stop a runner from kiting your slow bruiser around."},
+            {"name": "Sonic Shock", "note": "No backup means fewer bodies to punch through."},
+        ],
     },
     "stealth": {
         "title": "Stealth Katana",
@@ -134,6 +164,15 @@ PRESETS = {
             "Legs": "Lynx Paws (silent movement) + Reinforced Tendons",
             "Arms": "Mantis Blades (stealth finishers) or a Cool-scaling katana",
         },
+        "quickhacks": [
+            {"name": "Ping", "note": "See the whole network through walls. Plan your route."},
+            {"name": "Sonic Shock", "note": "Isolate a target so a takedown never gets called in."},
+            {"name": "Reboot Optics", "note": "Blind a camera or a guard for a clean slip-past."},
+            {"name": "Memory Wipe", "note": "Drop yourself out of combat, vanish, reset."},
+            {"name": "Cripple Movement", "note": "Freeze a patrol so you can walk right past."},
+            {"name": "System Reset", "note": "Silent non-lethal takedown from across the room."},
+            {"name": "Cyberpsychosis", "note": "Ultimate. Turn one gonk on his whole crew, then walk out."},
+        ],
     },
     "smartgun": {
         "title": "Smart Gunner",
@@ -159,8 +198,23 @@ PRESETS = {
             "Legs": "Reinforced Tendons",
             "Arms": "Projectile Launch System (backup burst) or empty for weapon grip",
         },
+        "quickhacks": [
+            {"name": "Ping", "note": "Tag everyone, then let smart rounds curve into them."},
+            {"name": "Weapon Glitch", "note": "Their guns choke while yours never miss."},
+            {"name": "Reboot Optics", "note": "Blind a target and let your smart gun mop up."},
+            {"name": "Sonic Shock", "note": "No backup called, no reinforcements to burn ammo on."},
+            {"name": "Overheat", "note": "Chip damage on a cluster before you open fire."},
+        ],
     },
 }
+
+# Best all-round quickhacks if you don't want to think about it, any build.
+UNIVERSAL_QUICKHACKS = [
+    {"name": "Ping", "note": "Reveals the whole network through walls. Never not worth a slot."},
+    {"name": "Sonic Shock", "note": "Stops enemies calling reinforcements."},
+    {"name": "Reboot Optics", "note": "Blinds a target for a reposition or a finisher."},
+    {"name": "Short Circuit", "note": "Cheap electrical damage that scales and crits."},
+]
 
 # Items everyone should run regardless of build.
 UNIVERSAL = [

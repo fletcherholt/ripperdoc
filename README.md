@@ -31,8 +31,10 @@ the first run sets itself up.
    ./run-deck.sh
    ```
 
-   First run builds a small local venv, then the editor opens in your browser and
-   finds your saves on its own.
+   First run builds a small local venv (it pulls Qt, so give it a minute), then
+   Ripperdoc opens as its own app window and finds your saves on its own. If the
+   native window won't start on your setup it falls back to a browser window; you
+   can also force that with `./run-deck.sh --web`.
 
 3. Optional, to get it in your app list with its icon (and add it to Steam as a
    non-Steam game so you can launch it from Game Mode):
@@ -78,7 +80,7 @@ structure never shifts.
 - Character level (1 to 50)
 - Street cred (1 to 50)
 - The five attributes: Body, Reflexes, Technical Ability, Intelligence, Cool (3 to 20, the game's real cap)
-- Unspent perk points
+- Unspent perk points and unspent attribute points (added even on a fully-spent character, via a safe node resize that's verified not to corrupt the save)
 - Build presets that set all of the above in one click
 
 <div align="center">
@@ -99,9 +101,11 @@ best-in-slot cyberware for that build on the cyberware screen:
 | **Stealth Katana** | One with the shadows, one swing one kill. Cool + Reflexes. |
 | **Smart Gunner** | Let the bullets do the aiming. Curve rounds round cover. Tech + Cool. |
 
-The cyberware list is a ripperdoc shopping list, not a magic button. It does not
-inject items into the save, because the inventory format is where saves get
-bricked. Buy and slot the chrome yourself in game.
+Each build also lists the **best quickhacks** to load into your cyberdeck.
+
+The cyberware and quickhack lists are a ripperdoc shopping list, not a magic
+button. They don't inject items into the save, because the inventory format is
+where saves get bricked. Buy and slot them yourself in game.
 
 ## Where your saves are
 

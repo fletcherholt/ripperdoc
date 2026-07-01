@@ -113,6 +113,13 @@ function renderStats() {
   $("#credNum").textContent = STATE.street_cred ?? 0;
   $("#credInput").value = STATE.street_cred ?? 0;
   $("#perkInput").value = STATE.perk_points ?? 0;
+  $("#attrPtsInput").value = STATE.attr_points ?? 0;
+  const editable = STATE.attr_points_editable;
+  $("#attrPtsInput").disabled = !editable;
+  $$('#attrPtsBlock .stepper button').forEach((b) => (b.disabled = !editable));
+  $("#attrPtsNote").textContent = editable
+    ? ""
+    : "This save has spent them all, so there's no points slot to write to. Just set your attributes below, same result.";
 }
 
 function renderAttrs() {
@@ -171,6 +178,20 @@ function renderCyber() {
   $("#capNum").textContent = preset ? "186" : "—";
   $("#armorNum").textContent = preset ? "1500" : "—";
   $("#cwTip").classList.add("hidden");
+  renderQuickhacks(preset);
+}
+
+function renderQuickhacks(preset) {
+  const qhacks = (preset && preset.quickhacks) || BUILDS.universal_quickhacks || [];
+  $("#qhFor").textContent = preset ? "for " + preset.title : "(all-round picks)";
+  const list = $("#qhList");
+  list.innerHTML = "";
+  qhacks.forEach((q) => {
+    const el = document.createElement("div");
+    el.className = "qh-item";
+    el.innerHTML = `<div class="qh-name">◆ ${q.name}</div><div class="qh-why">${q.note}</div>`;
+    list.appendChild(el);
+  });
 }
 
 function shortItem(s) {
@@ -222,7 +243,12 @@ async function pushEdit(target, value, attr) {
   if (target === "level") res = await api().set_level(value);
   else if (target === "cred") res = await api().set_street_cred(value);
   else if (target === "perk") res = await api().set_perk_points(value);
+  else if (target === "attrpts") res = await api().set_attribute_points(value);
   else if (target === "attr") res = await api().set_attribute(attr, value);
+  if (target === "attrpts" && res && !res.ok && res.error === "no_attr_slot") {
+    if (res.state) { STATE = res.state; renderStats(); }
+    return toast("Can't add attribute points to this save, set the attributes directly below");
+  }
   if (res && res.ok) {
     STATE = res.state;
     renderStats();
@@ -245,6 +271,7 @@ function bindSteppers() {
       if (t === "level") { inp = $("#levelInput"); lo = 1; hi = 50; }
       else if (t === "cred") { inp = $("#credInput"); lo = 1; hi = 50; }
       else if (t === "perk") { inp = $("#perkInput"); lo = 0; hi = 9999; }
+      else if (t === "attrpts") { inp = $("#attrPtsInput"); lo = 0; hi = 200; }
       else { inp = document.querySelector(`#attrBlock input[data-attr="${attr}"]`); lo = 3; hi = 20; }
       let cur = parseInt(inp.value || "0", 10);
       const a = btn.dataset.act;

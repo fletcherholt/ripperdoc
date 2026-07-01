@@ -18,7 +18,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from cp77edit.editor import SaveEditor, SaveError, ATTRIBUTES, ATTR_LABELS  # noqa
-from cp77edit.builds import PRESETS, UNIVERSAL  # noqa
+from cp77edit.builds import PRESETS, UNIVERSAL, UNIVERSAL_QUICKHACKS  # noqa
 
 HOME = Path.home()
 APPID = "1091500"
@@ -147,6 +147,19 @@ class Api:
     def set_perk_points(self, value):
         return self._apply(lambda: self.editor.set_perk_points(value))
 
+    def set_attribute_points(self, value):
+        if not self.editor:
+            return {"ok": False, "error": "no save loaded"}
+        try:
+            res = self.editor.set_attribute_points(value)
+            if res is None:
+                return {"ok": False, "error": "no_attr_slot",
+                        "state": self.editor.read_state()}
+            return {"ok": True, "state": self.editor.read_state()}
+        except Exception as e:  # noqa
+            traceback.print_exc()
+            return {"ok": False, "error": str(e)}
+
     def apply_preset(self, key):
         preset = PRESETS.get(key)
         if not preset:
@@ -179,31 +192,46 @@ class Api:
         return {
             "presets": PRESETS,
             "universal": UNIVERSAL,
+            "universal_quickhacks": UNIVERSAL_QUICKHACKS,
             "attributes": list(ATTRIBUTES),
             "attr_labels": ATTR_LABELS,
         }
 
 
 def main():
-    import webview
+    try:
+        import webview
+    except Exception:
+        return _fallback("pywebview isn't installed")
     api = Api()
     here = os.path.dirname(os.path.abspath(__file__))
     index = os.path.join(here, "web", "index.html")
-    webview.create_window(
-        "RIPPERDOC // Cyberpunk 2077 Save Editor",
-        index,
-        js_api=api,
-        width=1180,
-        height=820,
-        min_size=(900, 680),
-        background_color="#0a0a0c",
-    )
     icon = os.path.join(here, "assets", "icon.png")
     try:
-        webview.start(debug=("--debug" in sys.argv), icon=icon)
-    except TypeError:
-        # older pywebview builds don't accept icon=
-        webview.start(debug=("--debug" in sys.argv))
+        webview.create_window(
+            "RIPPERDOC // Cyberpunk 2077 Save Editor",
+            index,
+            js_api=api,
+            width=1180,
+            height=820,
+            min_size=(900, 680),
+            background_color="#0a0a0c",
+        )
+        try:
+            webview.start(debug=("--debug" in sys.argv), icon=icon)
+        except TypeError:
+            webview.start(debug=("--debug" in sys.argv))
+    except Exception as e:  # no GUI/webview backend available
+        return _fallback(str(e))
+
+
+def _fallback(reason):
+    """No native window backend — run the browser mode instead so the app still
+    works, rather than crashing."""
+    print(f"[ripperdoc] native window unavailable ({reason}); "
+          f"falling back to browser mode.")
+    import server
+    server.main()
 
 
 if __name__ == "__main__":

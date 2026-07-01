@@ -172,7 +172,14 @@ class SaveEditor:
             "attributes": {a: attrs.get(a) for a in ATTRIBUTES},
             "attr_labels": ATTR_LABELS,
             "perk_points": self._perk_points(),
+            "attr_points": self._attr_points(),
+            "attr_points_editable": self._attr_points_editable(),
         }
+
+    def _attr_points_editable(self):
+        # Always editable now: if the 'unspent' field is missing we add it via a
+        # safe node grow (see _set_devpoint_unspent / _commit_container).
+        return True
 
     def _proficiencies(self):
         _, pb = self._field_raw(self._dev, "proficiencies")
@@ -209,6 +216,17 @@ class SaveEditor:
                 un = fields.get("unspent")
                 return struct.unpack("<i", un[2][:4])[0] if un else 0
         return None
+
+    def _attr_points(self):
+        # The Attribute dev-point type is enum 0, so its 'type' field is omitted
+        # (CDPR drops default-valued fields). The entry with no 'type' is it.
+        _, db = self._field_raw(self._dev, "devPoints")
+        for _, fields in self._walk(db):
+            if "type" in fields:
+                continue
+            un = fields.get("unspent")
+            return struct.unpack("<i", un[2][:4])[0] if un else 0
+        return 0
 
     def _meta_field(self, key):
         if not self._meta:
@@ -274,24 +292,107 @@ class SaveEditor:
             self._meta_set(meta_key, float(value))
         return value if done else None
 
-    def set_perk_points(self, value):
-        """Set unspent Primary (perk) points. Only works if the field exists,
-        which it always does for a character that has spent any perk points."""
+    # ---- dev points (perk / attribute points) ---------------------------
+    # Perk and attribute points are stored as an 'unspent' Int32 on a
+    # SDevelopmentPoints entry. CDPR omits zero-valued fields, so a character
+    # who has spent everything has no 'unspent' field to patch. We rebuild the
+    # entry with the field added, which grows the node; that grow is committed
+    # safely in _commit_container (the container has no child nodes).
+
+    def _sidx(self, name):
+        strings = self._dev._strings
+        for i, s in enumerate(strings):
+            if s == name or (isinstance(s, (bytes, bytearray)) and s == name.encode()):
+                return i
+        raise SaveError(f"string {name!r} not in this save's node table")
+
+    def _devpoint_entries(self, pb):
+        """Parse devPoints into a list of entries; each is an ordered list of
+        mutable [name_str, type_str, value_bytes]."""
+        count = struct.unpack("<I", pb[:4])[0]
+        strings = self._dev._strings
+        p = 4
+        entries = []
+        for _ in range(count):
+            fc = struct.unpack("<H", pb[p : p + 2])[0]
+            descs = [struct.unpack("<HHI", pb[p + 2 + 8 * k : p + 2 + 8 * k + 8])
+                     for k in range(fc)]
+            flds = []
+            for (nm, ty, off) in descs:
+                tstr = strings[ty]
+                size = self._type_size(tstr)
+                flds.append([strings[nm], tstr, bytes(pb[p + off : p + off + size])])
+            entries.append(flds)
+            if descs:
+                p += descs[-1][2] + self._type_size(strings[descs[-1][1]])
+            else:
+                p += 2
+        return entries
+
+    def _build_struct(self, flds):
+        fc = len(flds)
+        head = bytearray(struct.pack("<H", fc))
+        data = bytearray()
+        base = 2 + 8 * fc
+        for (name, tname, val) in flds:
+            head += struct.pack("<HHI", self._sidx(name), self._sidx(tname), base + len(data))
+            data += val
+        return bytes(head + data)
+
+    def _write_field_varlen(self, sd, field, new_bytes):
+        idx = sd._field_index(field)
+        _, _, slc = sd._field_info(idx)
+        raw_len = len(bytes(sd))
+        start = slc.start
+        end = slc.stop if slc.stop is not None else raw_len
+        delta = len(new_bytes) - (end - start)
+        bytearray.__setitem__(sd, slice(start, end), new_bytes)
+        if delta:
+            for j in range(idx + 1, len(sd)):  # len(sd) is the field count
+                pos = 2 + 8 * j + 4
+                cur = struct.unpack("<I", bytes(bytearray.__getitem__(sd, slice(pos, pos + 4))))[0]
+                bytearray.__setitem__(sd, slice(pos, pos + 4), struct.pack("<I", cur + delta))
+
+    def _set_devpoint_unspent(self, target_type, value):
         value = max(0, int(value))
-        slc, db = self._field_raw(self._dev, "devPoints")
-        db = bytearray(db)
-        for _, fields in self._walk(bytes(db)):
-            t = fields.get("type")
-            un = fields.get("unspent")
-            if not t:
-                continue
-            tname = self._dev._strings[struct.unpack("<H", t[2][:2])[0]]
-            if tname == "Primary" and un:
-                off = un[1]
-                db[off : off + 4] = struct.pack("<i", value)
-                self._set_field_raw(self._dev, slc, bytes(db))
-                return value
-        return None
+        _, pb = self._field_raw(self._dev, "devPoints")
+        entries = self._devpoint_entries(pb)
+        strings = self._dev._strings
+
+        def type_of(flds):
+            for (n, t, v) in flds:
+                if n == "type":
+                    return strings[struct.unpack("<H", v[:2])[0]]
+            return None  # no 'type' field => Attribute (enum 0, omitted)
+
+        target = None
+        for flds in entries:
+            if type_of(flds) == target_type:
+                target = flds
+                break
+        if target is None:
+            target = []
+            if target_type is not None:
+                target.append(["type", "gamedataDevelopmentPointType",
+                               struct.pack("<H", self._sidx(target_type))])
+            entries.append(target)
+        for f in target:
+            if f[0] == "unspent":
+                f[2] = struct.pack("<i", value)
+                break
+        else:
+            target.append(["unspent", "Int32", struct.pack("<i", value)])
+
+        new_pb = struct.pack("<I", len(entries)) + b"".join(
+            self._build_struct(f) for f in entries)
+        self._write_field_varlen(self._dev, "devPoints", new_pb)
+        return value
+
+    def set_perk_points(self, value):
+        return self._set_devpoint_unspent("Primary", value)
+
+    def set_attribute_points(self, value):
+        return self._set_devpoint_unspent(None, value)
 
     def _meta_set(self, key, value):
         if self._meta:
@@ -312,8 +413,32 @@ class SaveEditor:
         return result
 
     # ---- persist --------------------------------------------------------
+    def _commit_container(self):
+        """Write the edited ScriptableSystemsContainer back into the save,
+        resizing the node safely. This container has no child nodes and no
+        ancestor (verified against real 2.31 saves), so a size change just
+        shifts the offsets of the nodes that come after it. The library's own
+        __exit__ resize path is buggy, so we do it here instead."""
+        config = self._config
+        new_node = bytes(config)
+        ssc_idx = self._container._address[-1]
+        ni = list(self.sf.nodes_info)
+        info = ni[ssc_idx]
+        offset, old_size = info.offset, info.size
+        delta = len(new_node) - old_size
+        if delta and any(offset < n.offset < offset + old_size for n in ni):
+            raise SaveError("refusing unsafe node resize (node has children)")
+        self.sf.data[offset : offset + old_size] = new_node
+        if delta:
+            ni[ssc_idx] = info._replace(size=old_size + delta)
+            end = offset + old_size
+            for i, n in enumerate(ni):
+                if i != ssc_idx and n.offset >= end:
+                    ni[i] = n._replace(offset=n.offset + delta)
+            self.sf.nodes_info = tuple(ni)
+
     def save(self):
-        self._container.__exit__(None, None, None)
+        self._commit_container()
         self._config = None
         self.sf.save()  # writes sav.dat, rotates previous to backup_N.dat
         if self._meta is not None:

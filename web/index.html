@@ -112,6 +112,16 @@
               <button class="max" data-act="set" data-target="perk" data-val="100">+100</button>
             </div>
           </div>
+          <div class="perks" id="attrPtsBlock">
+            <label>UNSPENT ATTRIBUTE POINTS</label>
+            <div class="stepper wide">
+              <button data-act="dec" data-target="attrpts">−</button>
+              <input id="attrPtsInput" type="number" min="0" max="200">
+              <button data-act="inc" data-target="attrpts">+</button>
+              <button class="max" data-act="set" data-target="attrpts" data-val="10">+10</button>
+            </div>
+            <div class="pt-note" id="attrPtsNote"></div>
+          </div>
         </div>
       </div>
       <div class="gpanel">
@@ -164,6 +174,13 @@
       </div>
     </div>
     <div class="cw-note">Pick a LOADOUT up top and the slots fill with the best chrome for that build. Click any slot for the why. This is your ripperdoc shopping list, I'm not jamming chrome into the save itself, that's how saves get bricked.</div>
+
+    <!-- best quickhacks for the build -->
+    <div class="qh-panel">
+      <div class="qh-head">◈ BEST QUICKHACKS <span id="qhFor"></span></div>
+      <div id="qhList" class="qh-list"></div>
+      <div class="qh-note">Quickhacks are cyberdeck programs, buy them from netrunners or pull them from access points and slot them in your OS. Same deal as chrome: this is the loadout to grab, not something I write into the save.</div>
+    </div>
   </div>
 
   <!-- SAVE BAR -->
