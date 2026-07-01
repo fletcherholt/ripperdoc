@@ -1,0 +1,55 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgglow" cx="50%" cy="42%" r="70%">
+      <stop offset="0" stop-color="#26101a"/>
+      <stop offset="60%" stop-color="#0d0a0d"/>
+      <stop offset="100%" stop-color="#060507"/>
+    </radialGradient>
+    <linearGradient id="chip" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff27a"/>
+      <stop offset="55%" stop-color="#fcee0a"/>
+      <stop offset="100%" stop-color="#e0a800"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+
+  <!-- tile with clipped top-right + bottom-left corners (CP panel motif) -->
+  <path d="M40 120 L120 40 H984 V904 L904 984 H40 Z" fill="url(#bgglow)" stroke="#3a1620" stroke-width="6"/>
+  <!-- scanlines -->
+  <g opacity="0.10">
+    <rect x="40" y="40" width="944" height="944" fill="url(#scan)"/>
+  </g>
+  <pattern id="scan" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="3" fill="#000"/></pattern>
+
+  <!-- yellow angular frame -->
+  <path d="M92 150 L150 92 H930 V872 L872 930 H92 Z" fill="none" stroke="#fcee0a" stroke-width="7" opacity="0.85"/>
+  <path d="M92 150 L150 92 H430" fill="none" stroke="#27e0f4" stroke-width="7"/>
+  <path d="M930 872 L872 930 H600" fill="none" stroke="#ff2e4d" stroke-width="7"/>
+
+  <!-- circuit traces into the chip -->
+  <g stroke="#27e0f4" stroke-width="9" fill="none" opacity="0.9" filter="url(#glow)">
+    <path d="M180 512 H300"/><path d="M844 512 H724"/>
+    <path d="M512 210 V320"/><path d="M512 814 V704"/>
+    <circle cx="180" cy="512" r="14" fill="#27e0f4"/><circle cx="844" cy="512" r="14" fill="#27e0f4"/>
+    <circle cx="512" cy="210" r="14" fill="#27e0f4"/><circle cx="512" cy="814" r="14" fill="#27e0f4"/>
+  </g>
+
+  <!-- red glitch offset of the chip outline -->
+  <rect x="308" y="322" width="408" height="408" rx="26" fill="none" stroke="#ff2e4d" stroke-width="10" opacity="0.55"/>
+
+  <!-- the chip / IC -->
+  <g filter="url(#glow)">
+    <rect x="322" y="312" width="380" height="380" rx="26" fill="#0c0a0d" stroke="url(#chip)" stroke-width="14"/>
+    <!-- IC pins -->
+    <g fill="url(#chip)">
+      <rect x="360" y="290" width="34" height="30" rx="4"/><rect x="430" y="290" width="34" height="30" rx="4"/><rect x="500" y="290" width="34" height="30" rx="4"/><rect x="570" y="290" width="34" height="30" rx="4"/><rect x="630" y="290" width="34" height="30" rx="4"/>
+      <rect x="360" y="704" width="34" height="30" rx="4"/><rect x="430" y="704" width="34" height="30" rx="4"/><rect x="500" y="704" width="34" height="30" rx="4"/><rect x="570" y="704" width="34" height="30" rx="4"/><rect x="630" y="704" width="34" height="30" rx="4"/>
+    </g>
+  </g>
+
+  <!-- bold glitch V inside the chip -->
+  <g filter="url(#glow)">
+    <path d="M392 372 L512 632 L632 372" fill="none" stroke="url(#chip)" stroke-width="46" stroke-linecap="square" stroke-linejoin="miter"/>
+    <path d="M392 372 L512 632 L632 372" fill="none" stroke="#27e0f4" stroke-width="10" opacity="0.6" transform="translate(-8,6)"/>
+  </g>
+</svg>

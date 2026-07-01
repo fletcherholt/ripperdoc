@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+# never commit real save files (samples belong to their owners)
+_samples/
+# dev-only reference clone + extracted cursor source
+vendor_ref/
+_cursorsrc/
+# dev preview harness
+web/preview.html
+web/_mock.js
+web/_demobuilds.js
+web/.playwright-mcp/
+web/showcase.html
+web/_showcase_mock.js
+_iconsrc/

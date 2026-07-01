@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NIGHT CITY // SAVE EDITOR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto+Mono:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="scanlines"></div>
+<div id="vignette"></div>
+<div id="grain"></div>
+
+<!-- ============ MAIN MENU / SAVE PICKER ============ -->
+<section id="picker" class="screen">
+  <div class="menu-wrap">
+    <div class="menu-title">
+      <div class="mt-top">CYBERPUNK</div>
+      <div class="mt-big glitch" data-text="2077">2077</div>
+      <div class="mt-sub">// SAVE EDITOR  //  NIGHT CITY DATA TERMINAL</div>
+    </div>
+
+    <div class="menu-list" id="saveList">
+      <div class="menu-empty">jackin' in… scanning your shards</div>
+    </div>
+
+    <div class="menu-actions">
+      <button class="gbtn" id="rescanBtn"><span>⟲</span> RESCAN</button>
+      <button class="gbtn" id="browseBtn"><span>⌕</span> BROWSE…</button>
+    </div>
+    <div class="menu-manual">
+      <input id="manualPath" type="text" placeholder="…or paste the path to a save folder (the one with sav.dat in it)">
+      <button class="gbtn solid" id="manualLoad">LOAD</button>
+    </div>
+    <div class="menu-foot">
+      Saves on the Deck hide in <code>compatdata/1091500/pfx/…/Cyberpunk 2077/</code>.
+      Every write parks your old file as <b>backup_N.dat</b> first, if it goes sideways you've got a way back.
+    </div>
+  </div>
+</section>
+
+<!-- ============ EDITOR ============ -->
+<section id="editor" class="screen hidden">
+  <header class="hud-top">
+    <button class="gbtn ghost sm" id="backBtn">← MAIN MENU</button>
+    <div class="hud-id">
+      <span class="hi-handle" id="idName">V</span>
+      <span class="hi-sep">//</span>
+      <span class="hi-life" id="idLifepath">—</span>
+      <span class="hi-sep">//</span>
+      <span class="hi-meta" id="idPlay">—</span>
+      <span class="hi-sep">//</span>
+      <span class="hi-meta" id="idPatch">—</span>
+    </div>
+    <div class="hud-tabs">
+      <button class="tab active" data-tab="character">CHARACTER</button>
+      <button class="tab" data-tab="cyberware">CYBERWARE</button>
+    </div>
+  </header>
+
+  <!-- loadout preset strip -->
+  <div class="loadout-block">
+    <div class="loadout-strip">
+      <span class="ls-label">BEST BUILD FOR ▸</span>
+      <div id="presetTabs" class="preset-tabs"></div>
+    </div>
+    <div class="loadout-desc" id="loadoutDesc">
+      Pick a playstyle, one click sets your attributes, level &amp; street cred, and loads the best-in-slot chrome for that build onto the CYBERWARE tab. Or just tweak the numbers yourself below.
+    </div>
+  </div>
+
+  <!-- ---- CHARACTER TAB ---- -->
+  <div class="tabview" id="tab-character">
+    <div class="char-grid">
+      <div class="gpanel">
+        <div class="gpanel-h">CORE</div>
+        <div class="gpanel-b stat-block">
+          <div class="bigstat">
+            <div class="bigstat-num" id="levelNum">0</div>
+            <div class="bigstat-meta">
+              <label>LEVEL <span class="cap">/ 50</span></label>
+              <div class="stepper">
+                <button data-act="dec" data-target="level">−</button>
+                <input id="levelInput" type="number" min="1" max="50">
+                <button data-act="inc" data-target="level">+</button>
+                <button class="max" data-act="max" data-target="level">MAX</button>
+              </div>
+            </div>
+          </div>
+          <div class="bigstat alt">
+            <div class="bigstat-num" id="credNum">0</div>
+            <div class="bigstat-meta">
+              <label>STREET CRED <span class="cap">/ 50</span></label>
+              <div class="stepper">
+                <button data-act="dec" data-target="cred">−</button>
+                <input id="credInput" type="number" min="1" max="50">
+                <button data-act="inc" data-target="cred">+</button>
+                <button class="max" data-act="max" data-target="cred">MAX</button>
+              </div>
+            </div>
+          </div>
+          <div class="perks">
+            <label>UNSPENT PERK POINTS</label>
+            <div class="stepper wide">
+              <button data-act="dec" data-target="perk">−</button>
+              <input id="perkInput" type="number" min="0" max="9999">
+              <button data-act="inc" data-target="perk">+</button>
+              <button class="max" data-act="set" data-target="perk" data-val="100">+100</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gpanel">
+        <div class="gpanel-h">ATTRIBUTES <span class="gh-hint">3-20</span></div>
+        <div class="gpanel-b" id="attrBlock"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- CYBERWARE TAB (in-game body diagram) ---- -->
+  <div class="tabview hidden" id="tab-cyberware">
+    <div class="cw-screen">
+      <!-- left capacity bar -->
+      <div class="cw-rail left">
+        <div class="rail-icon">◈</div>
+        <div class="rail-bar" id="capBar"></div>
+        <div class="rail-num" id="capNum">186</div>
+        <div class="rail-cap">CAPACITY</div>
+      </div>
+
+      <!-- body diagram -->
+      <div class="cw-stage" id="cwStage">
+        <svg class="cw-body" viewBox="0 0 240 520" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <linearGradient id="bodyg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ff6b8a" stop-opacity=".42"/>
+              <stop offset=".5" stop-color="#c2587a" stop-opacity=".22"/>
+              <stop offset="1" stop-color="#1a6f8c" stop-opacity=".34"/>
+            </linearGradient>
+          </defs>
+          <g fill="url(#bodyg)" stroke="#7fd6e6" stroke-width=".6" stroke-opacity=".5">
+            <circle cx="120" cy="46" r="27"/>
+            <path d="M108 72 h24 l4 16 c30 6 40 22 44 54 l-10 60 -12 -2 -6 -44 -4 70 -6 96 -10 64 -14 0 -6 -70 -6 70 -14 0 -10 -64 -6 -96 -4 -70 -6 44 -12 2 -10 -60 c4 -32 14 -48 44 -54 z"/>
+          </g>
+          <line x1="120" y1="74" x2="120" y2="470" stroke="#7fd6e6" stroke-width=".4" stroke-opacity=".25"/>
+        </svg>
+        <div class="cw-bodyglow"></div>
+        <!-- slots injected by JS -->
+        <div id="cwSlots"></div>
+        <!-- tooltip popover -->
+        <div id="cwTip" class="cw-tip hidden"></div>
+      </div>
+
+      <!-- right info rail -->
+      <div class="cw-rail right">
+        <div class="rail-icon cyan">▣</div>
+        <div class="rail-bar cyan" id="armorBar"></div>
+        <div class="rail-num cyan" id="armorNum">1500</div>
+        <div class="rail-cap">ARMOR</div>
+      </div>
+    </div>
+    <div class="cw-note">Pick a LOADOUT up top and the slots fill with the best chrome for that build. Click any slot for the why. This is your ripperdoc shopping list, I'm not jamming chrome into the save itself, that's how saves get bricked.</div>
+  </div>
+
+  <!-- SAVE BAR -->
+  <div class="savebar">
+    <div class="savebar-info" id="dirtyNote">SAVE IS CLEAN, CHOOM</div>
+    <button class="gbtn write" id="saveBtn">▮ WRITE TO SAVE FILE</button>
+  </div>
+</section>
+
+<div id="toast" class="toast hidden"></div>
+<div id="loader" class="loader hidden"><div class="loader-box">DECRYPTING SHARD…</div></div>
+
+<script src="app.js"></script>
+</body>
+</html>
