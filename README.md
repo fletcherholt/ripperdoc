@@ -17,34 +17,29 @@ backs it up before it writes a single thing. Pick a save, pick a build, done.
 
 ## Install
 
-### Steam Deck — download the app (easiest)
+### Steam Deck (recommended — puts a real app in your menu)
 
-A single self-contained Linux app. No Python, no terminal, nothing to install.
-
-1. Grab **Ripperdoc-x86_64.AppImage** from the
-   [latest release](https://github.com/fletcherholt/ripperdoc/releases/latest).
-2. In Desktop Mode, right-click it in Dolphin, **Properties → Permissions →
-   tick "Is executable"** (or `chmod +x Ripperdoc-x86_64.AppImage`).
-3. Double-click to run it. To launch it from Game Mode, add it to Steam:
-   **Steam → Add a Non-Steam Game → Browse** to the AppImage.
-
-If it refuses to start, run it once from Konsole with
-`./Ripperdoc-x86_64.AppImage --appimage-extract-and-run`.
-
-### From source (auto-updating)
-
-If you'd rather run from the repo (this version **auto-updates** itself on
-launch):
+In Desktop Mode, open **Konsole** and paste:
 
 ```bash
-git clone https://github.com/fletcherholt/ripperdoc.git
-cd ripperdoc
-./run-deck.sh
+git clone https://github.com/fletcherholt/ripperdoc.git ~/Applications/ripperdoc
+cd ~/Applications/ripperdoc
+./run-deck.sh          # first run builds a local venv + pulls Qt (a minute)
+./install-deck.sh      # adds "Ripperdoc" to your app menu with its icon
 ```
 
-First run builds a small local venv and pulls Qt, then Ripperdoc opens as its
-own app window. `./install-deck.sh` adds it to your app menu. Skip the update
-check with `--no-update`, or force browser mode with `--web`.
+After that it's a proper app: launch **Ripperdoc** from your application menu,
+or **Steam → Add a Non-Steam Game → Browse** to `run-deck.sh` to launch it from
+Game Mode. It opens as its own native window (verified on a real Deck), finds
+your saves automatically, and **auto-updates** itself on launch (`--no-update`
+to skip, `--web` to force browser mode).
+
+This uses the Deck's own Qt/OpenGL, which is why it renders reliably.
+
+**On the AppImage:** a prebuilt `Ripperdoc-x86_64.AppImage` is attached to
+[releases](https://github.com/fletcherholt/ripperdoc/releases/latest), but its
+bundled Qt WebEngine currently conflicts with SteamOS's graphics stack (a GLX
+error), so the source install above is the reliable route on the Deck for now.
 
 ### macOS / Linux desktop
 
