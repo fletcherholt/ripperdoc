@@ -208,12 +208,19 @@ PRESETS = {
     },
 }
 
-# Best all-round quickhacks if you don't want to think about it, any build.
+# The flat-out best quickhacks in the game, any build. Shown as the default
+# "best quickhacks" option before you pick a loadout.
 UNIVERSAL_QUICKHACKS = [
     {"name": "Ping", "note": "Reveals the whole network through walls. Never not worth a slot."},
-    {"name": "Sonic Shock", "note": "Stops enemies calling reinforcements."},
-    {"name": "Reboot Optics", "note": "Blinds a target for a reposition or a finisher."},
-    {"name": "Short Circuit", "note": "Cheap electrical damage that scales and crits."},
+    {"name": "Contagion", "note": "Poison that jumps between enemies. Best AoE damage in the game."},
+    {"name": "Overheat", "note": "Cheap burn that spreads. Your bread-and-butter opener."},
+    {"name": "Short Circuit", "note": "Cheap electrical, crits, scales all game. Spam it."},
+    {"name": "Synapse Burnout", "note": "Single-target nuke that scales with Intelligence. Deletes elites."},
+    {"name": "Sonic Shock", "note": "Cuts comms so nobody calls backup. Top control hack."},
+    {"name": "Reboot Optics", "note": "Blinds a target. Free reposition or finisher setup."},
+    {"name": "Cyberpsychosis", "note": "Ultimate. Turn one gonk on his whole crew and walk out."},
+    {"name": "Suicide", "note": "Ultimate. Make the scariest enemy in the room off himself."},
+    {"name": "System Reset", "note": "Ultimate. Silent non-lethal takedown from across the map."},
 ]
 
 # Items everyone should run regardless of build.

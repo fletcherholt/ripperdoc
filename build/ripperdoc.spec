@@ -4,9 +4,12 @@
 import os
 from PyInstaller.utils.hooks import collect_all
 
-ROOT = os.path.abspath(os.getcwd())
+# SPECPATH is the directory of this spec file (build/); the project root is its
+# parent. Paths must be absolute because PyInstaller resolves script/data paths
+# relative to the spec dir, not the working directory.
+ROOT = os.path.abspath(os.path.join(SPECPATH, os.pardir))
 
-datas = [("web", "web"), ("assets", "assets")]
+datas = [(os.path.join(ROOT, "web"), "web"), (os.path.join(ROOT, "assets"), "assets")]
 binaries = []
 hiddenimports = ["lz4", "lz4.block"]
 
@@ -21,7 +24,7 @@ for pkg in ("webview", "PyQt5", "PyQtWebEngine"):
         pass
 
 a = Analysis(
-    ["app.py"],
+    [os.path.join(ROOT, "app.py")],
     pathex=[ROOT],
     binaries=binaries,
     datas=datas,

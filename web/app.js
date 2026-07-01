@@ -183,7 +183,7 @@ function renderCyber() {
 
 function renderQuickhacks(preset) {
   const qhacks = (preset && preset.quickhacks) || BUILDS.universal_quickhacks || [];
-  $("#qhFor").textContent = preset ? "for " + preset.title : "(all-round picks)";
+  $("#qhFor").textContent = preset ? "for " + preset.title : "(the best in Night City, any build)";
   const list = $("#qhList");
   list.innerHTML = "";
   qhacks.forEach((q) => {
