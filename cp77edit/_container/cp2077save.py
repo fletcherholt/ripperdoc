@@ -17,7 +17,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 from pathlib import Path
 from typing import NamedTuple
-from cp2077chunk import (
+from .cp2077chunk import (
     ChunkInfo,
     DataChunk,
     DataChunkTableChunk,
@@ -25,7 +25,7 @@ from cp2077chunk import (
     HeaderChunk,
     NodeTableChunk,
 )
-from cp2077node import parse_node
+from .cp2077node import parse_node
 
 
 class Data:

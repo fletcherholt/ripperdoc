@@ -8,16 +8,10 @@ and the save structure stays intact.
 """
 
 import json
-import os
 import struct
-import sys
 from pathlib import Path
 
-_C = os.path.join(os.path.dirname(__file__), "_container")
-if _C not in sys.path:
-    sys.path.insert(0, _C)
-
-import cp2077chunk as _chunk
+from ._container import cp2077chunk as _chunk
 
 # Patch 2.31 grew the chunk table capacity to 512 entries; the upstream parser
 # only whitelisted 256 and 1024. Belt and braces in case the vendored copy is
@@ -25,7 +19,7 @@ import cp2077chunk as _chunk
 if 0x200 not in _chunk.DataChunkTableChunk.VALID_CAPACITY:
     _chunk.DataChunkTableChunk.VALID_CAPACITY = (0x100, 0x200, 0x400)
 
-from cp2077save import SaveFile  # noqa: E402
+from ._container.cp2077save import SaveFile  # noqa: E402
 
 ATTRIBUTES = ("Strength", "Reflexes", "TechnicalAbility", "Intelligence", "Cool")
 # Body is labelled "Strength" inside the save.

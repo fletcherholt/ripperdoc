@@ -1,0 +1,80 @@
+name: build-appimage
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  appimage:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: System deps (FUSE for appimagetool + Qt runtime libs)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libfuse2 libnss3 libxcomposite1 libxdamage1 \
+            libxrandr2 libxkbcommon0 libxkbcommon-x11-0 libasound2 libxtst6 \
+            libgl1 libegl1 libxcb-xinerama0 libxcb-icccm4 libxcb-image0 \
+            libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0
+
+      - name: Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller lz4 pywebview PyQt5 PyQtWebEngine
+
+      - name: Build with PyInstaller
+        run: pyinstaller --noconfirm --clean build/ripperdoc.spec
+
+      - name: Assemble AppDir
+        run: |
+          set -e
+          APPDIR=AppDir
+          rm -rf "$APPDIR"
+          mkdir -p "$APPDIR/usr/bin"
+          cp -r dist/ripperdoc/* "$APPDIR/usr/bin/"
+          cp assets/icon-256.png "$APPDIR/ripperdoc.png"
+          cat > "$APPDIR/ripperdoc.desktop" <<'DESK'
+          [Desktop Entry]
+          Type=Application
+          Name=Ripperdoc
+          Comment=Cyberpunk 2077 save editor for the Steam Deck
+          Exec=ripperdoc
+          Icon=ripperdoc
+          Categories=Game;Utility;
+          Terminal=false
+          DESK
+          cat > "$APPDIR/AppRun" <<'RUN'
+          #!/bin/bash
+          HERE="$(dirname "$(readlink -f "${0}")")"
+          # QtWebEngine's sandbox needs a setuid helper we don't ship; disable it.
+          export QTWEBENGINE_DISABLE_SANDBOX=1
+          export QTWEBENGINE_CHROMIUM_FLAGS="--no-sandbox --disable-gpu"
+          exec "$HERE/usr/bin/ripperdoc" "$@"
+          RUN
+          chmod +x "$APPDIR/AppRun"
+
+      - name: Package AppImage
+        run: |
+          set -e
+          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+          ARCH=x86_64 ./appimagetool-x86_64.AppImage --appimage-extract-and-run AppDir Ripperdoc-x86_64.AppImage
+          ls -lh Ripperdoc-x86_64.AppImage
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Ripperdoc-x86_64.AppImage
+          path: Ripperdoc-x86_64.AppImage
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Ripperdoc-x86_64.AppImage

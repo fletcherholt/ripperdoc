@@ -18,7 +18,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 from collections import namedtuple
 from itertools import chain, repeat
 from struct import Struct
-from cp2077type import Type
+from .cp2077type import Type
 
 pack16 = Struct("<H").pack
 unpack16 = Struct("<H").unpack

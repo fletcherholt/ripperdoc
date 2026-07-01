@@ -19,9 +19,9 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from app import Api  # noqa: E402
+from app import Api, res_root  # noqa: E402
 
-WEB = os.path.join(HERE, "web")
+WEB = os.path.join(res_root(), "web")
 api = Api()
 
 # browse_folder relies on a webview window; give a stdlib fallback that just

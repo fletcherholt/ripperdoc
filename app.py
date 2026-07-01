@@ -20,6 +20,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from cp77edit.editor import SaveEditor, SaveError, ATTRIBUTES, ATTR_LABELS  # noqa
 from cp77edit.builds import PRESETS, UNIVERSAL, UNIVERSAL_QUICKHACKS  # noqa
 
+
+def res_root():
+    """Directory that holds web/ and assets/ — the PyInstaller bundle dir when
+    frozen (AppImage build), else the source tree."""
+    if getattr(sys, "frozen", False):
+        return getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
+    return os.path.dirname(os.path.abspath(__file__))
+
 HOME = Path.home()
 APPID = "1091500"
 SAVE_SUBPATH = "Saved Games/CD Projekt Red/Cyberpunk 2077"
@@ -204,7 +212,7 @@ def main():
     except Exception:
         return _fallback("pywebview isn't installed")
     api = Api()
-    here = os.path.dirname(os.path.abspath(__file__))
+    here = res_root()
     index = os.path.join(here, "web", "index.html")
     icon = os.path.join(here, "assets", "icon.png")
     try:
